@@ -15,7 +15,7 @@ export default function App() {
           name="Home"
           component={Home}
           options={{
-            title: 'Home',
+            title: 'Posts',
             tabBarIcon: ({size,focused,color}) => {
               return (
                 <Image
@@ -31,7 +31,7 @@ export default function App() {
           component={Profile}
           options={{
             tabBarInactiveTintColor:'black',
-            title: 'Profile',
+            title: 'Users',
             tabBarActiveTintColor:'blue',
             tabBarIcon: ({size,focused,color}) => {
               return (
