@@ -1,10 +1,15 @@
-import { FlatList, StyleSheet, Text, View, Button } from 'react-native';
+import { FlatList, StyleSheet, Text, View, Button, Image } from 'react-native';
 import React, { useEffect, useState } from 'react';
+import { SearchBar } from 'react-native-elements';
+// import {Icon} from 'react-native-vector-icons';
+import { Icon } from 'react-native-elements'
 
 export default function Profile({navigation}) {
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
+    const [search,setSearch]=useState('');
     const itemsPerPage = 20;
+
   
     useEffect(() => {
       fetchData();
@@ -18,7 +23,38 @@ export default function Profile({navigation}) {
         .then((response) => response.json())
         .then((json) => setData(json.slice(start, end)));
     };
-  
+    
+    let filteredData  =  data.filter((item)=>{
+       return (item.username.toLowerCase().includes(search.toLowerCase())
+              || item.email.toLowerCase().includes(search.toLowerCase())
+              || item.phone.toLowerCase().includes(search.toLowerCase())
+              || item.name.toLowerCase().includes(search.toLowerCase())
+              || item.website.toLowerCase().includes(search.toLowerCase())
+          );
+    });
+
+
+    // let filteredDataByEmail = data.filter(
+    //   (item)=>{
+    //     return item.email.toLowerCase().includes(search.toLowerCase());
+    //   }
+    // );
+    
+    // filteredData=[...filteredDataByEmail,...filteredData]
+
+    // function merge(a, b, prop) {
+    //   var reduced = a.filter(aitem => !b.find(bitem => aitem[prop] === bitem[prop]))
+    //   return reduced.concat(b);
+    // }
+    // filteredData=merge(filteredData, filteredDataByEmail, "id");
+
+    //Printing of data
+    // console.log(filteredData);
+    // (filteredData).forEach(element => {
+    //   console.log(element.username,element.email);
+    // });
+
+
     const handleNextPage = () => {
       setCurrentPage((prevPage) => prevPage + 1);
     };
@@ -29,8 +65,31 @@ export default function Profile({navigation}) {
   
     return (
       <View style={{ backgroundColor: 'white', flex: 1 }}>
+        <SearchBar
+        placeholder="Search"
+        onChangeText={text => setSearch(text)}
+        value={search}
+        containerStyle={{color:'white',backgroundColor:'white',borderColor:'white'}}
+        inputContainerStyle={{color:'black',backgroundColor:'white',borderRadius:38,borderWidth:1,borderColor:'black'}}
+        searchIcon={<Image
+          style={{ width: 20, height: 20 }}
+          source={require('./pic2.png')}
+        />}
+        rightIcon={
+          <Image
+          style={{ width: 20, height: 20 }}
+          source={require('./pic3.png')}
+        />
+        }
+        cancelIcon={<Image
+          style={{ width: 20, height: 20 }}
+          source={require('./pic3.png')}
+        />}
+        // showLoading={true}
+        // searchIcon={}
+        />
         <FlatList
-          data={data}
+          data={filteredData}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <View style={{ flex: 1, borderWidth: 1, margin: 8, paddingTop: 3, borderRadius: 18, backgroundColor: 'white' }}>
@@ -43,7 +102,7 @@ export default function Profile({navigation}) {
                     <View style={{ width: 10, height: 10, borderWidth: 1, borderRadius: 100, top: 10, left: -5,marginBottom:0, backgroundColor: '#e63274' }}></View>
                     <Text style={{ color: 'black', fontSize: 20, fontWeight: 'bold' }}>{item.name}</Text>
                   </View>
-                  <Text style={{ color: '#cd9df5', marginLeft: 5 }}>{item.usename}</Text>
+                  <Text style={{ color: '#cd9df5', marginLeft: 5 }}>{item.username}</Text>
                   <Text style={{ color: '#cd9df5', marginLeft: 5 }}>{item.phone}</Text>
                   <Text style={{ color: '#cd9df5', marginLeft: 5 }}>{item.website}</Text>
                   <Text style={{ color: '#cd9df5', marginLeft: 5 }}>{item.email}</Text>
@@ -82,3 +141,10 @@ const styles = StyleSheet.create({
       borderColor: '#2f0d4a',
     },
   });
+
+
+  // {"address": 
+  //    {"city": "Gwenborough", "geo": {"lat": "-37.3159", "lng": "81.1496"}, "street": "Kulas Light", "suite": "Apt. 556", "zipcode": "92998-3874"}, 
+  //    "company": {"bs": "harness real-time e-markets", "catchPhrase": "Multi-layered client-server neural-net", "name": "Romaguera-Crona"},
+  //     "email": "Sincere@april.biz", "id": 1, "name": "Leanne Graham", "phone": "1-770-736-8031 x56442", 
+  //     "username": "Bret", "website": "hildegard.org"}
